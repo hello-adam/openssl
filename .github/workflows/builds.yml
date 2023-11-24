@@ -1,9 +1,7 @@
 ---
 name: Static build
 
-on:
-  push:
-    branch: "1.1.1w-build"
+on: ["push"]
 
 permissions:
   contents: read
