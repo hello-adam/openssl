@@ -18,7 +18,7 @@ jobs:
     - name: config
       working-directory: _build
       run: |
-        perl ..\Configure --prefix=%PREFIX% --openssldir=%PREFIX% no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
+        perl ..\Configure --prefix=$env:PREFIX --openssldir=$env:PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
         perl configdata.pm --dump
       env:
         PREFIX: ${{ github.workspace }}/install
