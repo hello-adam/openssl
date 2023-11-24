@@ -8,13 +8,10 @@ permissions:
 
 jobs:
   WindowsBuild:
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
     - uses: actions/checkout@v4
     - uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x64
-        toolset: 14.11
     - uses: shogo82148/actions-setup-perl@v1
     - name: prepare the build directory
       run: mkdir _build
