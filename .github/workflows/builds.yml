@@ -13,19 +13,25 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ilammy/msvc-dev-cmd@v1
       with:
-        arch: x86
-        toolset: "14.11"
+        arch: x64
+        toolset: 14.11
     - uses: shogo82148/actions-setup-perl@v1
     - name: prepare the build directory
       run: mkdir _build
     - name: config
       working-directory: _build
       run: |
-        perl ..\Configure no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
+        perl ..\Configure --prefix=%PREFIX% --openssldir=%PREFIX% no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
         perl configdata.pm --dump
+      env:
+        PREFIX: ${{ github.workspace }}/install
     - name: build
       working-directory: _build
-      run: nmake 
+      run: nmake
+    - uses: actions/upload-artifact@v3
+      with:
+        name: windows-x64
+        path: install
 
   LinuxBuild:
     runs-on: ubuntu-20.04
@@ -35,10 +41,16 @@ jobs:
       run: mkdir _build
     - name: config
       working-directory: _build
-      run: ../config no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
+      run: ../config --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
+      env:
+        PREFIX: ${{ github.workspace }}/install
     - name: build
       working-directory: _build
-      run: make
+      run: make -j`nproc`
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-x86_64
+        path: install
     
 
   MacBuild:
@@ -50,10 +62,14 @@ jobs:
     - name: config
       working-directory: _build
       run: |
-        echo $CC
-        ../Configure no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
+        ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
       env:
         CC: ${{ github.workspace }}/mac-universal/cc
+        PREFIX: ${{ github.workspace }}/install
     - name: build
       working-directory: _build
-      run: make
+      run: make -j`nproc`
+    - uses: actions/upload-artifact@v3
+      with:
+        name: macos-universal2
+        path: install
