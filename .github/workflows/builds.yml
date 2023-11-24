@@ -1,0 +1,61 @@
+---
+name: Static build
+
+on:
+  push:
+    branch: "1.1.1w-build"
+
+permissions:
+  contents: read
+
+jobs:
+  WindowsBuild:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+        toolset: "14.11"
+    - uses: shogo82148/actions-setup-perl@v1
+    - name: prepare the build directory
+      run: mkdir _build
+    - name: config
+      working-directory: _build
+      run: |
+        perl ..\Configure no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
+        perl configdata.pm --dump
+    - name: build
+      working-directory: _build
+      run: nmake 
+
+  LinuxBuild:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: prepare the build directory
+      run: mkdir _build
+    - name: config
+      working-directory: _build
+      run: ../config no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
+    - name: build
+      working-directory: _build
+      run: make
+    
+
+  MacBuild:
+    runs-on: macos-12
+    steps:
+    - uses: actions/checkout@v4
+    - name: prepare the build directory
+      run: mkdir _build
+    - name: config
+      working-directory: _build
+      run: |
+        echo $CC
+        ../Configure no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
+      env:
+        CC: ${{ github.workspace }}/mac-universal/cc
+    - name: build
+      working-directory: _build
+      run: make
