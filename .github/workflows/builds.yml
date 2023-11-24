@@ -24,9 +24,7 @@ jobs:
         PREFIX: ${{ github.workspace }}/install
     - name: build
       working-directory: _build
-      run: |
-        nmake
-        nmake install
+      run: nmake
     - uses: actions/upload-artifact@v3
       with:
         name: windows-x64
@@ -68,9 +66,7 @@ jobs:
         PREFIX: ${{ github.workspace }}/install
     - name: build
       working-directory: _build
-      run: |
-        make -j`nproc`
-        make install
+      run: make -j`nproc`
     - uses: actions/upload-artifact@v3
       with:
         name: macos-universal2
