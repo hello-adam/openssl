@@ -18,7 +18,7 @@ jobs:
     - name: config
       working-directory: _build
       run: |
-        perl ..\Configure --prefix=$env:PREFIX --openssldir=$env:PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
+        perl ..\Configure --prefix=$env:PREFIX --openssldir=$env:PREFIX no-shared no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
         perl configdata.pm --dump
       env:
         PREFIX: ${{ github.workspace }}/dist
@@ -40,7 +40,7 @@ jobs:
       run: mkdir _build
     - name: config
       working-directory: _build
-      run: ../config --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
+      run: ../config --prefix=$PREFIX --openssldir=$PREFIX no-shared no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
       env:
         PREFIX: ${{ github.workspace }}/dist
     - name: build
@@ -62,7 +62,7 @@ jobs:
     - name: config
       working-directory: _build
       run: |
-        ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
+        ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-shared no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
       env:
         PREFIX: ${{ github.workspace }}/dist
     - name: build
@@ -85,7 +85,7 @@ jobs:
     - name: config
       working-directory: _build
       run: |
-        ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-arm64-cc
+        ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-shared no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-arm64-cc
       env:
         PREFIX: ${{ github.workspace }}/dist
     - name: build
