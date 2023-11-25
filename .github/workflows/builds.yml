@@ -106,5 +106,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           name: ${{ github.run_number }}
+          tag: ${{ github.run_number }}
+          commit: ${{ github.sha }}
           body: "Static libs for building into dynamic libraries"
           artifacts: "linux-x86_64.zip,windows-x64.zip,macos-universal2.zip"
