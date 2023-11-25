@@ -95,7 +95,7 @@ jobs:
         run: ls -R
         working-directory: artifacts
       - run: |
-          zip -r ../../mac-universal2.zip *
+          zip -r ../../macos-universal2.zip *
         working-directory: artifacts/macos-universal2
       - run: |
           zip -r ../../windows-x64.zip *
@@ -106,4 +106,4 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           body: "Static libs for building into dynamic libraries"
-          artifacts: "linux-x86_64.zip,windows-x64.zip,mac-universal2.zip"
+          artifacts: "linux-x86_64.zip,windows-x64.zip,macos-universal2.zip"
