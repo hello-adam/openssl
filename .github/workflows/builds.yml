@@ -95,13 +95,13 @@ jobs:
         run: ls -R
         working-directory: artifacts
       - run: |
-          zip -r ../mac-universal2.zip lib include
-        working-directory: artifacts/mac-universal2
+          zip -r ../../mac-universal2.zip *
+        working-directory: artifacts/macos-universal2
       - run: |
-          zip -r ../windows-x64.zip lib include
+          zip -r ../../windows-x64.zip *
         working-directory: artifacts/windows-x64
       - run: |
-          zip -r ../linux-x86_64.zip lib include
+          zip -r ../../linux-x86_64.zip *
         working-directory: artifacts/linux-x86_64
       - uses: ncipollo/release-action@v1
         with:
