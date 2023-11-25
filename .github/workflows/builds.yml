@@ -21,14 +21,14 @@ jobs:
         perl ..\Configure --prefix=$env:PREFIX --openssldir=$env:PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT VC-WIN64A
         perl configdata.pm --dump
       env:
-        PREFIX: ${{ github.workspace }}/install
+        PREFIX: ${{ github.workspace }}/dist
     - name: build
       working-directory: _build
       run: nmake
     - uses: actions/upload-artifact@v3
       with:
         name: windows-x64
-        path: install
+        path: dist
 
   LinuxBuild:
     runs-on: ubuntu-20.04
@@ -40,7 +40,7 @@ jobs:
       working-directory: _build
       run: ../config --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC
       env:
-        PREFIX: ${{ github.workspace }}/install
+        PREFIX: ${{ github.workspace }}/dist
     - name: build
       working-directory: _build
       run: |
@@ -49,7 +49,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: linux-x86_64
-        path: install
+        path: dist
 
   MacBuild:
     runs-on: macos-12
@@ -63,11 +63,42 @@ jobs:
         ../Configure --prefix=$PREFIX --openssldir=$PREFIX no-makedepend no-shared no-deprecated no-asm no-tests -DOPENSSL_SMALL_FOOTPRINT -fPIC darwin64-x86_64-cc
       env:
         CC: ${{ github.workspace }}/mac-universal/cc
-        PREFIX: ${{ github.workspace }}/install
+        PREFIX: ${{ github.workspace }}/dist
     - name: build
       working-directory: _build
       run: make -j`nproc`
     - uses: actions/upload-artifact@v3
       with:
         name: macos-universal2
-        path: install
+        path: dist
+
+  BuildRelease:
+    name: Package Builds
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      - WindowsBuild
+      - LinuxBuild
+      - MacBuild
+    steps:
+      - name: Gather all build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+      - name: Display structure of gathered artifacts
+        run: ls -R
+        working-directory: artifacts
+      - run: |
+          zip -r ../mac-universal2.zip lib include
+        working-directory: artifacts/mac-universal2
+      - run: |
+          zip -r ../windows-x64.zip lib include
+        working-directory: artifacts/windows-x64
+      - run: |
+          zip -r ../linux-x86_64.zip lib include
+        working-directory: artifacts/linux-x86_64
+      - uses: ncipollo/release-action@v1
+        with:
+          body: "Static libs for building into dynamic libraries"
+          artifacts: "linux-x86_64.zip,windows-x64.zip,mac-universal2.zip"
