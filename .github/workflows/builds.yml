@@ -26,13 +26,7 @@ jobs:
       working-directory: _build
       run: |
         nmake
-        nmake install
-    - name: clean up build artifacts
-      run:
-        move dist tmpdist
-        md dist
-        xcopy tmpdist/lib dist/lib /E/H/I
-        xcopy tmpdist/include dist/include /E/H/I
+        nmake install_sw
     - uses: actions/upload-artifact@v3
       with:
         name: windows-x64
@@ -53,13 +47,7 @@ jobs:
       working-directory: _build
       run: |
         make -j`nproc`
-        make install
-    - name: clean up build artifacts
-      run:
-        mv dist tmpdist
-        mkdir dist
-        cp -r tmpdist/lib dist/lib
-        cp -r tmpdist/include dist/include
+        make install_sw
     - uses: actions/upload-artifact@v3
       with:
         name: linux-x86_64
@@ -82,13 +70,7 @@ jobs:
       working-directory: _build
       run: |
         make -j`nproc`
-        make install
-    - name: clean up build artifacts
-      run:
-        mv dist tmpdist
-        mkdir dist
-        cp -r tmpdist/lib dist/lib
-        cp -r tmpdist/include dist/include
+        make install_sw
 
     - uses: actions/upload-artifact@v3
       with:
